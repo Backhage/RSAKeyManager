@@ -62,6 +62,16 @@ namespace RSAKeyManager
 
         internal static bool Export(string containerName, string filename)
         {
+            return Export(containerName, filename, true);
+        }
+
+        internal static bool ExportPublic(string containerName, string filename)
+        {
+            return Export(containerName, filename, false);
+        }
+
+        private static bool Export(string containerName, string filename, bool includePrivateKey)
+        {
             var cspParams = new CspParameters()
             {
                 KeyContainerName = containerName,
@@ -80,7 +90,7 @@ namespace RSAKeyManager
             }
 
             var xml = new XmlDocument();
-            xml.LoadXml(rsa.ToXmlString(true));
+            xml.LoadXml(rsa.ToXmlString(includePrivateKey));
 
             try
             {
@@ -113,7 +123,7 @@ namespace RSAKeyManager
             var cspParams = new CspParameters()
             {
                 KeyContainerName = containerName,
-                Flags = CspProviderFlags.UseMachineKeyStore
+                Flags = CspProviderFlags.UseMachineKeyStore 
             };
             try
             {

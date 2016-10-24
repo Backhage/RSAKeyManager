@@ -35,6 +35,15 @@ namespace RSAKeyManager
                 }
                 ExportKeysToXml(options.ExportOptions[0], options.ExportOptions[1]);
             }
+            else if (options.ExportPublicOptions != null)
+            {
+                if (options.ExportPublicOptions.Length != 2)
+                {
+                    Console.WriteLine("Invalid options. Use --help for usage.");
+                    Environment.Exit(1);
+                }
+                ExportPublicKeyToXml(options.ExportPublicOptions[0], options.ExportPublicOptions[1]);
+            }
             else if (options.ImportOptions != null)
             {
                 if (options.ImportOptions.Length != 2)
@@ -104,6 +113,21 @@ namespace RSAKeyManager
                 Environment.ExitCode = 3;
             }
         }
+
+        private static void ExportPublicKeyToXml(string containerName, string filname)
+        {
+            Console.WriteLine($"Exporting public key from \"{containerName}\" to \"{filname}\"");
+            if (KeyManager.ExportPublic(containerName, filname))
+            {
+                Console.WriteLine("Success");
+            }
+            else
+            {
+                Console.WriteLine("Failed");
+                Environment.ExitCode = 4;
+            }
+        }
+
         private static void ImportKeysFromXml(string containerName, string filename)
         {
             Console.WriteLine($"Importing Key Container \"{containerName}\" from \"{filename}\"");
@@ -114,7 +138,7 @@ namespace RSAKeyManager
             else
             {
                 Console.WriteLine("Failed");
-                Environment.ExitCode = 4;
+                Environment.ExitCode = 5;
             }
         }
     }

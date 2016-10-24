@@ -14,6 +14,9 @@ namespace RSAKeyManager
         [OptionArray('e', "export", HelpText = "Export to XML. Usage: RSAKeyManager -e \"MyKeys\" \"C:\\users\\me\\keys.xml\"")]
         public string[] ExportOptions { get; set; }
 
+        [OptionArray('p', "exportpublic", HelpText = "Export the public key only. Do not use for importing. Usage: RSAKeyManager -p \"MyKeys\" \"C:\\users\\me\\publickey.xml\"")]
+        public string[] ExportPublicOptions { get; set; }
+
         [OptionArray('i', "import", HelpText = "Import from XML. Usage: RSAKeyManager -i \"MyKeys\" \"C:\\users\\me\\keys.xml\"")]
         public string[] ImportOptions { get; set; }
 
