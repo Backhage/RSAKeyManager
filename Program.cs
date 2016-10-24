@@ -14,7 +14,11 @@ namespace RSAKeyManager
             }
 
             CommandLine.Parser.Default.ParseArguments(args, options);
-            if (options.NewContainerName != null)
+            if (options.List)
+            {
+                ListExistingKeyContainers();
+            }
+            else if (options.NewContainerName != null)
             {
                 GenerateNewKeyContainer(options.NewContainerName);
             }
@@ -39,6 +43,23 @@ namespace RSAKeyManager
                     Environment.Exit(1);
                 }
                 ImportKeysFromXml(options.ImportOptions[0], options.ImportOptions[1]);
+            }
+        }
+
+        private static void ListExistingKeyContainers()
+        {
+            var containerNames = KeyManager.GetContainerNames();
+            if (containerNames == null)
+            {
+                Console.WriteLine("Unable to list containers.");
+                return;
+            }
+            Console.WriteLine("");
+            Console.WriteLine("Existing machine level RSA Key Containers");
+            Console.WriteLine("-----------------------------------------");
+            foreach (var containerName in containerNames)
+            {
+               Console.WriteLine(containerName); 
             }
         }
 

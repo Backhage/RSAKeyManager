@@ -5,8 +5,13 @@ using System.Xml;
 
 namespace RSAKeyManager
 {
-    class KeyManager
+    internal class KeyManager
     {
+        internal static string[] GetContainerNames()
+        {
+            return Containers.GetContainerNames(Containers.Storage.Machine);
+        }
+
         internal static bool Generate(string containerName)
         {
             if (ContainerExists(containerName))
@@ -23,7 +28,8 @@ namespace RSAKeyManager
 
             try
             {
-                var rsa = new RSACryptoServiceProvider(cspParams);
+                // ReSharper disable once ObjectCreationAsStatement
+                new RSACryptoServiceProvider(cspParams);
             }
             catch (CryptographicException ex)
             {
@@ -33,25 +39,6 @@ namespace RSAKeyManager
             return true;
         }
 
-        private static bool ContainerExists(string containerName)
-        {
-            var cspParams = new CspParameters()
-            {
-                KeyContainerName = containerName,
-                Flags = CspProviderFlags.UseMachineKeyStore | CspProviderFlags.UseExistingKey
-            };
-
-            // Ugly way to check if key container already exist.
-            try
-            {
-                var rsa = new RSACryptoServiceProvider(cspParams);
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
         internal static bool Delete(string containerName)
         {
             var cspParams = new CspParameters()
@@ -62,8 +49,7 @@ namespace RSAKeyManager
 
             try
             {
-                var rsa = new RSACryptoServiceProvider(cspParams);
-                rsa.PersistKeyInCsp = false;
+                var rsa = new RSACryptoServiceProvider(cspParams) {PersistKeyInCsp = false};
                 rsa.Clear();
             }
             catch (CryptographicException ex)
@@ -140,6 +126,27 @@ namespace RSAKeyManager
                 return false;
             }
             return true;
+        }
+
+        private static bool ContainerExists(string containerName)
+        {
+            var cspParams = new CspParameters()
+            {
+                KeyContainerName = containerName,
+                Flags = CspProviderFlags.UseMachineKeyStore | CspProviderFlags.UseExistingKey
+            };
+
+            // Ugly way to check if key container already exist.
+            try
+            {
+                // ReSharper disable once ObjectCreationAsStatement
+                new RSACryptoServiceProvider(cspParams);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }
